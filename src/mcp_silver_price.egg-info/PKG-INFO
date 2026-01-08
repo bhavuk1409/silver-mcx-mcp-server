@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: mcp_silver_price
+Version: 0.1.0
+Summary: An MCP server for silver price from Groww.in
+Author-email: Bhavuk Agrawal <bhavuk@example.com>
+Project-URL: Source, https://github.com/isdaniel/mcp-metal-price
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: selenium>=4.0.0
+Requires-Dist: webdriver-manager>=4.0.0
+Dynamic: license-file
+
+# Silver Price MCP Server
+
+MCP server that scrapes current silver prices from Groww.in (MCX India). **No API key required!**
+
+## Features
+
+- ✅ Real-time silver prices from MCX India
+- ✅ Prices in Indian Rupees (INR)
+- ✅ Current price, open, and previous close
+- ✅ Free - no API key needed
+- ✅ Clean and simple
+
+## Requirements
+
+- Python 3.10+
+- Google Chrome browser
+- Dependencies:
+  - `mcp>=1.0.0`
+  - `selenium>=4.0.0`
+  - `webdriver-manager>=4.0.0`
+
+## Installation
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## Usage
+
+### Test the scraper
+```bash
+python test.py
+```
+
+### Run as MCP server
+```bash
+python -m mcp_metal_price
+```
+
+### MCP Configuration
+
+Add to your `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "silver-price": {
+      "command": "python",
+      "args": ["-m", "mcp_metal_price"],
+      "cwd": "/path/to/mcp-metal-price"
+    }
+  }
+}
+```
+
+## API
+
+### Tool: `get_silver_price`
+
+No parameters required.
+
+**Response:**
+```json
+{
+  "metal": "Silver",
+  "symbol": "XAG",
+  "currency": "INR",
+  "timestamp": "2026-01-08T18:00:00.000000",
+  "source": "Groww.in (MCX)",
+  "url": "https://groww.in/commodities/futures/mcx_silver",
+  "price": "238940.00",
+  "price_formatted": "₹2,38,940.00",
+  "open": "2,41,409.00",
+  "previous_close": "2,41,492.00"
+}
+```
+
+## How It Works
+
+1. Uses Selenium to load Groww.in silver page
+2. Waits for dynamic JavaScript content to load
+3. Extracts price using regex patterns
+4. Returns structured JSON response
+
+## Notes
+
+- Scraping takes ~5-10 seconds per request
+- Chrome runs in headless mode (no window)
+- First run downloads ChromeDriver automatically
+- Prices update during MCX trading hours
+
+## License
+
+MIT License

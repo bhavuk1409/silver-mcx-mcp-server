@@ -1,126 +1,102 @@
-[![MseeP Badge](https://mseep.net/pr/isdaniel-mcp-metal-price-badge.jpg)](https://mseep.ai/app/isdaniel-mcp-metal-price)
+# Silver Price MCP Server
 
-
-[![smithery badge](https://smithery.ai/badge/@isdaniel/mcp-metal-price)](https://smithery.ai/server/@isdaniel/mcp-metal-price)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/mcp-metal-price)](https://pypi.org/project/mcp-metal-price/)
-[![PyPI - Version](https://img.shields.io/pypi/v/mcp-metal-price)](https://pypi.org/project/mcp-metal-price/)
-[![Verified on MseeP](https://mseep.ai/badge.svg)](https://mseep.ai/app/d60d18a5-d88e-4dea-bc16-00bbf1c0463a)
-
-# Metal Price MCP Server
-
-An MCP server that provides current and historical gold/precious metal prices via the [GoldAPI.io](https://www.goldapi.io/) service.
+Get silver prices and chart images from Groww.in (MCX India) via MCP.
 
 ## Features
 
-- Get current prices for gold (XAU), silver (XAG), platinum (XPT), and palladium (XPD)
-- Support for multiple currencies (USD, EUR, etc.)
-- Optional historical price lookup by date
-
-## Requirements
-
-- Python 3.7+
-- Packages:
-  - `mcp>=1.0.0`
-  - `requests>=2.31.0`
-
-## Setup
-
-1. Clone this repository
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Set your GoldAPI.io API key as an environment variable:
-   ```bash
-   export GOLDAPI_API_KEY="your_api_key_here"
-   ```
-   (Windows users: use `set` instead of `export`)
-
-## Usage
-
-The server provides one MCP tool:
+- Real-time silver price data
+- Chart image included
+- Current price, open, previous close
+- 52-week high/low
+- Volume & Open Interest
+- Trend analysis (UP/DOWN)
+- No API key needed
+- Clean & simple
 
 ## Installation
 
-This server is designed to be installed manually by adding its configuration to the `cline_mcp_settings.json` file.
+```bash
+pip install -r requirements.txt
+```
 
-1.  Add the following entry to the `mcpServers` object in your `cline_mcp_settings.json` file:
+## Usage
+
+### Test
+```bash
+python test.py
+```
+
+### MCP Configuration
+
+Add to Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
-"mcp_metal_price": {
-  "args": [
-    "/c",
-    "python",
-    "-m",
-    "mcp_metal_price"
-  ],
-  "env": {
-    "GOLDAPI_API_KEY": "Your GOLDAPI_API_KEY"
+{
+  "mcpServers": {
+    "silver-price": {
+      "command": "python",
+      "args": ["-m", "mcp_metal_price"],
+      "cwd": "/Users/bhavukagrawal/mcp-metal-price"
+    }
   }
 }
 ```
 
-### get_gold_price
-Get current or historical metal prices.
+Restart Claude and ask: **"Get the current silver price"**
 
-**Parameters:**
-- `currency` (string, default: "USD"): Currency code (ISO 4217 format)
-- `metal` (string, default: "XAU"): Metal symbol (XAU, XAG, XPT, XPD)
-- `date` (string, optional): Historical date in YYYYMMDD format
+## API
 
-**Example Usage:**
+### Tool: `get_silver_price`
+
+No parameters required.
+
+**Returns:**
+- JSON data with price metrics
+- PNG chart image (base64 encoded)
+
+**Example Data:**
 ```json
 {
-  "currency": "EUR",
-  "metal": "XAU"
+  "metal": "Silver",
+  "symbol": "XAG",
+  "currency": "INR",
+  "current_price": "2,42,798.00",
+  "price_formatted": "₹2,42,798.00",
+  "open": "2,42,775.00",
+  "previous_close": "2,40,277.00",
+  "52w_low": "1,09,741.00",
+  "52w_high": "2,59,692.00",
+  "oi_lots": "12,394",
+  "lot_size": "30",
+  "change": "+2521.00",
+  "percent_change": "+1.05%",
+  "trend": "UP"
 }
 ```
 
-## Running the Server
+Plus chart image showing the price graph.
 
-Start the server with:
-```bash
-python src/server.py
-```
+## Requirements
 
-## Using with MCP Clients
+- Python 3.10+
+- Chrome browser
+- Dependencies: mcp, selenium, webdriver-manager
 
-Once the server is running, you can connect to it from MCP clients like Cline or Claude.
+## How It Works
 
-### Connecting to the Server
-The server runs on stdio by default. In your MCP client, you can connect using:
-```bash
-cmd /c python src/server.py
-```
+1. Opens Groww.in silver page with Selenium
+2. Waits for content to load (8 seconds)
+3. Extracts price data using regex
+4. Captures full-page screenshot
+5. Returns JSON data + chart image to Claude
 
-### Using the get_gold_price Tool
-Example tool usage in Cline/Claude:
-```xml
-<use_mcp_tool>
-<server_name>gold-price</server_name>
-<tool_name>get_gold_price</tool_name>
-<arguments>
-{
-  "currency": "USD",
-  "metal": "XAU"
-}
-</arguments>
-</use_mcp_tool>
-```
+## Notes
 
-
-### Response Format
-The server returns price data in JSON format:
-```json
-{
-  "timestamp": 1713600000,
-  "metal": "XAU",
-  "currency": "USD",
-  "price": 2345.67,
-  "unit": "per troy ounce"
-}
-```
+- Scraping takes ~8-10 seconds
+- Chrome runs headless (no window)
+- Image is PNG format, base64 encoded
+- Data from MCX India market
 
 ## License
 
-This project is licensed under the terms of the MIT license. See [LICENSE](LICENSE) file for details.
+MIT

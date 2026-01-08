@@ -3,17 +3,18 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mcp_metal_price"
-version = "0.0.4"
+name = "mcp_silver_price"
+version = "0.1.0"
 authors = [
-  { name = "danielshih", email = "dog830228@gmail.com" },
+  { name = "Bhavuk Agrawal", email = "bhavuk@example.com" },
 ]
-description = "An MCP server for metal price information"
+description = "An MCP server for silver price from Groww.in"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
   "mcp>=1.0.0",
-  "requests>=2.31.0"
+  "selenium>=4.0.0",
+  "webdriver-manager>=4.0.0"
 ]
 
 [project.scripts]

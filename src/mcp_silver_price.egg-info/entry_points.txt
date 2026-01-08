@@ -1,0 +1,2 @@
+[console_scripts]
+mcp_metal_price = src.mcp_metal_price.server:main
